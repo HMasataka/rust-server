@@ -1,7 +1,6 @@
+use crate::usecase::dto::calculation_dto::HelloResponse;
+use crate::usecase::services::CalculationService;
 use axum::Json;
-use crate::application::services::CalculationService;
-use crate::application::dto::calculation_dto::HelloResponse;
-use crate::presentation::controllers::HelloController;
 
 #[utoipa::path(
     get,
@@ -13,9 +12,8 @@ use crate::presentation::controllers::HelloController;
 )]
 pub async fn hello_handler() -> Result<Json<HelloResponse>, String> {
     let calculation_service = CalculationService::new();
-    let controller = HelloController::new(calculation_service);
-    
-    match controller.get_hello() {
+
+    match calculation_service.get_hello_with_calculations() {
         Ok(response) => Ok(Json(response)),
         Err(err) => Err(err),
     }

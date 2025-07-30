@@ -1,47 +1,42 @@
-use crate::domain::value_objects::{CalculationResult, Number};
-
 #[derive(Debug, Clone)]
 pub struct Calculation {
-    operand_a: Number,
-    operand_b: Number,
+    operand_a: i32,
+    operand_b: i32,
 }
 
 impl Calculation {
     pub fn new(a: i32, b: i32) -> Result<Self, &'static str> {
         Ok(Self {
-            operand_a: Number::new(a)?,
-            operand_b: Number::new(b)?,
+            operand_a: a,
+            operand_b: b,
         })
     }
 
-    pub fn add(&self) -> CalculationResult {
-        CalculationResult::new(self.operand_a.value() + self.operand_b.value())
+    pub fn add(&self) -> i32 {
+        self.operand_a + self.operand_b
     }
 
-    pub fn subtract(&self) -> CalculationResult {
-        CalculationResult::new(self.operand_a.value() - self.operand_b.value())
+    pub fn subtract(&self) -> i32 {
+        self.operand_a - self.operand_b
     }
 
-    pub fn multiply(&self) -> CalculationResult {
-        CalculationResult::new(self.operand_a.value() * self.operand_b.value())
+    pub fn multiply(&self) -> i32 {
+        self.operand_a * self.operand_b
     }
 
-    pub fn divide(&self) -> Result<CalculationResult, &'static str> {
-        if self.operand_b.value() == 0 {
+    pub fn divide(&self) -> Result<i32, &'static str> {
+        if self.operand_b == 0 {
             Err("Division by zero")
         } else {
-            Ok(CalculationResult::new(
-                self.operand_a.value() / self.operand_b.value(),
-            ))
+            Ok(self.operand_a / self.operand_b)
         }
     }
 
-    pub fn operand_a(&self) -> &Number {
+    pub fn operand_a(&self) -> &i32 {
         &self.operand_a
     }
 
-    pub fn operand_b(&self) -> &Number {
+    pub fn operand_b(&self) -> &i32 {
         &self.operand_b
     }
 }
-
