@@ -1,9 +1,34 @@
-use axum::{routing::get, serve, Router};
+use axum::{routing::get, serve, Json, Router};
 use rust_server::math::calculator;
 use rust_server::utils::helper;
+use serde::{Deserialize, Serialize};
 use tokio::net::TcpListener;
+use utoipa::{OpenApi, ToSchema};
 
-async fn hello_handler() -> &'static str {
+#[derive(OpenApi)]
+#[openapi(
+    paths(hello_handler),
+    components(schemas(Hello)),
+    tags(
+        (name = "Hello World", description = "A simple hello world API")
+    )
+)]
+pub struct ApiDoc;
+
+#[derive(Debug, Clone, Serialize, Deserialize, ToSchema)]
+pub struct Hello {
+    message: String,
+}
+
+#[utoipa::path(
+    get,
+    path = "/",
+    tag = "Hello World",
+    responses(
+        (status = 200, description = "Hello World", body = Hello),
+    ),
+)]
+pub async fn hello_handler() -> Json<Hello> {
     println!("=== 別ディレクトリの関数を呼び出すサンプル ===\n");
 
     // mathディレクトリのcalculatorモジュールの関数を使用
@@ -36,11 +61,17 @@ async fn hello_handler() -> &'static str {
     println!("{} is even: {}", 23, helper::is_even(23));
     println!("{}", helper::greet("Rustプログラマー"));
 
-    "Hello World"
+    let response = Hello {
+        message: "Hello World".to_string(),
+    };
+
+    Json(response)
 }
 
 #[tokio::main]
 async fn main() {
+    println!("{}", ApiDoc::openapi().to_pretty_json().unwrap());
+
     let app = Router::new().route("/", get(hello_handler));
 
     let listener = TcpListener::bind("0.0.0.0:3000").await.unwrap();
