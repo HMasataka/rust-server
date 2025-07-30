@@ -1,5 +1,5 @@
-use crate::usecase::dto::calculation_dto::HelloResponse;
-use crate::usecase::services::CalculationService;
+use crate::usecase::calculation::CalculationUseCase;
+use crate::usecase::calculation::HelloResponse;
 use axum::Json;
 
 #[utoipa::path(
@@ -11,7 +11,7 @@ use axum::Json;
     ),
 )]
 pub async fn hello_handler() -> Result<Json<HelloResponse>, String> {
-    let calculation_service = CalculationService::new();
+    let calculation_service = CalculationUseCase::new();
 
     match calculation_service.get_hello_with_calculations() {
         Ok(response) => Ok(Json(response)),

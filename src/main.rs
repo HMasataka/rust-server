@@ -1,12 +1,12 @@
 use axum::{routing::get, serve, Router};
-use rust_server::usecase::dto::calculation_dto::HelloResponse;
-use rust_server::presentation::handlers::hello_handler;
+use rust_server::handlers::hello_handler;
+use rust_server::usecase::calculation::HelloResponse;
 use tokio::net::TcpListener;
 use utoipa::OpenApi;
 
 #[derive(OpenApi)]
 #[openapi(
-    paths(rust_server::presentation::handlers::hello_handler::hello_handler),
+    paths(rust_server::handlers::hello_handler::hello_handler),
     components(schemas(HelloResponse)),
     tags(
         (name = "Hello World", description = "Onion Architecture API")
